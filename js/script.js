@@ -41,9 +41,16 @@ if (localStorage.getItem('dashboard_theme') === 'light') {
   /* ════════════════════════════════
      TO-DO LIST
   ════════════════════════════════ */
-function renderTodos() {
+  let todos = JSON.parse(localStorage.getItem('dashboard_todos') || '[]');
+
+  function saveTodos() {
+    localStorage.setItem('dashboard_todos', JSON.stringify(todos));
+  }
+
+  function renderTodos() {
     const list = document.getElementById('todo-list');
-    const sortValue = document.getElementById('todo-sort').value; // Mengambil nilai urutan
+    const sortSelect = document.getElementById('todo-sort');
+    const sortValue = sortSelect ? sortSelect.value : 'all';
     list.innerHTML = '';
 
     // Fitur 3: Menyaring/Mengurutkan tugas berdasarkan pilihan (Semua/Selesai/Belum)
@@ -88,24 +95,47 @@ function renderTodos() {
   }
 
   function addTodo() {
-    const input = document.getElementById('todo-input');
-    const text  = input.value.trim();
-    if (!text) return;
+      const input = document.getElementById('todo-input');
+      const text  = input.value.trim();
+      if (!text) return; // Jika kosong, batalkan
 
-    // Fitur 2: Mencegah Duplikat Tugas
-    const isDuplicate = todos.some(t => t.text.toLowerCase() === text.toLowerCase());
-    if (isDuplicate) {
-      alert('Tugas ini sudah ada di daftarmu! Coba masukkan tugas yang lain.');
-      return; // Berhenti di sini, tugas tidak ditambahkan
+      // Mencegah Duplikat Tugas
+      const isDuplicate = todos.some(t => t.text.toLowerCase() === text.toLowerCase());
+      if (isDuplicate) {
+        alert('Tugas ini sudah ada di daftarmu! Coba masukkan tugas yang lain.');
+        return; 
+      }
+
+      todos.unshift({ text, done: false });
+      saveTodos();
+      renderTodos();
+      input.value = '';
+      input.focus();
     }
-
-    todos.unshift({ text, done: false });
+    
+function toggleTodo(i) {
+    todos[i].done = !todos[i].done;
     saveTodos();
     renderTodos();
-    input.value = '';
-    input.focus();
   }
 
+  function deleteTodo(i) {
+    todos.splice(i, 1);
+    saveTodos();
+    renderTodos();
+  }
+
+  function clearDone() {
+    todos = todos.filter(t => !t.done);
+    saveTodos();
+    renderTodos();
+  }
+
+  document.getElementById('todo-input').addEventListener('keydown', e => {
+    if (e.key === 'Enter') addTodo();
+  });
+
+  renderTodos();
   /* ════════════════════════════════
      FOCUS TIMER
   ════════════════════════════════ */
