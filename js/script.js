@@ -41,6 +41,9 @@ if (localStorage.getItem('dashboard_theme') === 'light') {
   /* ════════════════════════════════
      TO-DO LIST
   ════════════════════════════════ */
+/* ════════════════════════════════
+     TO-DO LIST
+  ════════════════════════════════ */
   let todos = JSON.parse(localStorage.getItem('dashboard_todos') || '[]');
 
   function saveTodos() {
@@ -50,19 +53,14 @@ if (localStorage.getItem('dashboard_theme') === 'light') {
   function renderTodos() {
     const list = document.getElementById('todo-list');
     const sortSelect = document.getElementById('todo-sort');
-    const sortValue = sortSelect ? sortSelect.value : 'all';
+    const sortValue = sortSelect ? sortSelect.value : 'all'; // Mengambil nilai urutan
     list.innerHTML = '';
 
-    // Fitur 3: Menyaring/Mengurutkan tugas berdasarkan pilihan (Semua/Selesai/Belum)
-    let filteredTodos = todos;
-    if (sortValue === 'pending') {
-      filteredTodos = todos.filter(t => !t.done);
-    } else if (sortValue === 'done') {
-      filteredTodos = todos.filter(t => t.done);
-    }
-
-    filteredTodos.forEach((t) => {
-      const originalIndex = todos.indexOf(t); // Penting agar tombol delete tetap tepat sasaran
+    // Kita menggunakan perulangan biasa agar 'index' aslinya tidak berubah
+    todos.forEach((t, index) => {
+      // Fitur 3: Menyaring tugas dengan cara menyembunyikan yang tidak sesuai
+      if (sortValue === 'pending' && t.done) return; // Abaikan yang sudah selesai
+      if (sortValue === 'done' && !t.done) return;   // Abaikan yang belum selesai
 
       const li = document.createElement('li');
       li.className = 'todo-item' + (t.done ? ' done' : '');
@@ -70,7 +68,7 @@ if (localStorage.getItem('dashboard_theme') === 'light') {
       const check = document.createElement('div');
       check.className = 'todo-check';
       check.title = t.done ? 'Mark undone' : 'Mark done';
-      check.onclick = () => toggleTodo(originalIndex);
+      check.onclick = () => toggleTodo(index); // Menggunakan index asli yang aman
 
       const span = document.createElement('span');
       span.className = 'todo-text';
@@ -80,7 +78,7 @@ if (localStorage.getItem('dashboard_theme') === 'light') {
       del.className = 'btn btn-sm btn-danger';
       del.textContent = '✕';
       del.title = 'Delete';
-      del.onclick = () => deleteTodo(originalIndex);
+      del.onclick = () => deleteTodo(index); // Menggunakan index asli yang aman
 
       li.appendChild(check);
       li.appendChild(span);
@@ -95,25 +93,25 @@ if (localStorage.getItem('dashboard_theme') === 'light') {
   }
 
   function addTodo() {
-      const input = document.getElementById('todo-input');
-      const text  = input.value.trim();
-      if (!text) return; // Jika kosong, batalkan
+    const input = document.getElementById('todo-input');
+    const text  = input.value.trim();
+    if (!text) return;
 
-      // Mencegah Duplikat Tugas
-      const isDuplicate = todos.some(t => t.text.toLowerCase() === text.toLowerCase());
-      if (isDuplicate) {
-        alert('Tugas ini sudah ada di daftarmu! Coba masukkan tugas yang lain.');
-        return; 
-      }
-
-      todos.unshift({ text, done: false });
-      saveTodos();
-      renderTodos();
-      input.value = '';
-      input.focus();
+    // Fitur 2: Mencegah Duplikat Tugas
+    const isDuplicate = todos.some(t => t.text.toLowerCase() === text.toLowerCase());
+    if (isDuplicate) {
+      alert('Tugas ini sudah ada di daftarmu! Coba masukkan tugas yang lain.');
+      return;
     }
-    
-function toggleTodo(i) {
+
+    todos.unshift({ text, done: false });
+    saveTodos();
+    renderTodos();
+    input.value = '';
+    input.focus();
+  }
+
+  function toggleTodo(i) {
     todos[i].done = !todos[i].done;
     saveTodos();
     renderTodos();
