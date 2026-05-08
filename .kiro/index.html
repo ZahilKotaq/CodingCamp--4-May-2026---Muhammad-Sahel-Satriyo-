@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Life Dashboard</title>
+  
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="grid">
+
+  <div class="card" id="clock-card">
+    <div id="time">00:00:00</div>
+    <div id="date"></div>
+    <div id="greeting"></div>
+  </div>
+
+  <div class="card" id="todo-card">
+    <div class="card-title">📝 To-Do List</div>
+    <div class="todo-input-row">
+      <input type="text" id="todo-input" placeholder="Add a task and press Enter…" maxlength="120" />
+      <button class="btn" onclick="addTodo()">Add</button>
+    </div>
+    <ul id="todo-list"></ul>
+    <div class="todo-footer">
+      <span id="todo-count">0 tasks</span>
+      <button class="btn btn-sm btn-ghost" onclick="clearDone()">Clear done</button>
+    </div>
+  </div>
+
+  <div class="card" id="timer-card">
+    <div class="card-title">⏱ Focus Timer</div>
+    <div class="timer-display">
+      <div id="timer-time">25:00</div>
+      <div id="timer-label">Focus session</div>
+    </div>
+    <div class="timer-progress-wrap">
+      <div id="timer-progress"></div>
+    </div>
+    <div class="timer-controls">
+      <button class="btn" id="timer-start-btn" onclick="timerToggle()">▶ Start</button>
+      <button class="btn btn-ghost" onclick="timerReset()">↺ Reset</button>
+    </div>
+    <div class="timer-presets">
+      <button class="preset-btn active" onclick="setPreset(25,'Focus session',this)">25 min</button>
+      <button class="preset-btn" onclick="setPreset(10,'Short break',this)">10 min</button>
+      <button class="preset-btn" onclick="setPreset(5,'Quick break',this)">5 min</button>
+      <button class="preset-btn" onclick="setPreset(50,'Deep work',this)">50 min</button>
+    </div>
+  </div>
+
+  <div class="card" id="links-card">
+    <div class="card-title">🔗 Quick Links</div>
+    <div class="links-add-row">
+      <input type="text" id="link-name" placeholder="Label (e.g. GitHub)" maxlength="30" />
+      <input type="url" id="link-url" placeholder="https://…" />
+      <button class="btn" onclick="addLink()">Add</button>
+    </div>
+    <div class="links-grid" id="links-grid"></div>
+  </div>
+
+</div>
+
+<script src="js/script.js"></script>
+</body>
+</html>
