@@ -1,4 +1,19 @@
 /* ════════════════════════════════
+   THEME TOGGLE (LIGHT / DARK)
+════════════════════════════════ */
+function toggleTheme() {
+  document.body.classList.toggle('light-mode');
+  const isLight = document.body.classList.contains('light-mode');
+  localStorage.setItem('dashboard_theme', isLight ? 'light' : 'dark');
+  document.getElementById('theme-toggle').textContent = isLight ? '🌙 Dark Mode' : '☀️ Light Mode';
+}
+
+// Cek tema yang tersimpan saat halaman dimuat
+if (localStorage.getItem('dashboard_theme') === 'light') {
+  document.body.classList.add('light-mode');
+  document.getElementById('theme-toggle').textContent = '🌙 Dark Mode';
+}
+/* ════════════════════════════════
      CLOCK
   ════════════════════════════════ */
   const DAYS   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -26,23 +41,29 @@
   /* ════════════════════════════════
      TO-DO LIST
   ════════════════════════════════ */
-  let todos = JSON.parse(localStorage.getItem('dashboard_todos') || '[]');
-
-  function saveTodos() {
-    localStorage.setItem('dashboard_todos', JSON.stringify(todos));
-  }
-
-  function renderTodos() {
+function renderTodos() {
     const list = document.getElementById('todo-list');
+    const sortValue = document.getElementById('todo-sort').value; // Mengambil nilai urutan
     list.innerHTML = '';
-    todos.forEach((t, i) => {
+
+    // Fitur 3: Menyaring/Mengurutkan tugas berdasarkan pilihan (Semua/Selesai/Belum)
+    let filteredTodos = todos;
+    if (sortValue === 'pending') {
+      filteredTodos = todos.filter(t => !t.done);
+    } else if (sortValue === 'done') {
+      filteredTodos = todos.filter(t => t.done);
+    }
+
+    filteredTodos.forEach((t) => {
+      const originalIndex = todos.indexOf(t); // Penting agar tombol delete tetap tepat sasaran
+
       const li = document.createElement('li');
       li.className = 'todo-item' + (t.done ? ' done' : '');
 
       const check = document.createElement('div');
       check.className = 'todo-check';
       check.title = t.done ? 'Mark undone' : 'Mark done';
-      check.onclick = () => toggleTodo(i);
+      check.onclick = () => toggleTodo(originalIndex);
 
       const span = document.createElement('span');
       span.className = 'todo-text';
@@ -52,7 +73,7 @@
       del.className = 'btn btn-sm btn-danger';
       del.textContent = '✕';
       del.title = 'Delete';
-      del.onclick = () => deleteTodo(i);
+      del.onclick = () => deleteTodo(originalIndex);
 
       li.appendChild(check);
       li.appendChild(span);
@@ -70,37 +91,20 @@
     const input = document.getElementById('todo-input');
     const text  = input.value.trim();
     if (!text) return;
+
+    // Fitur 2: Mencegah Duplikat Tugas
+    const isDuplicate = todos.some(t => t.text.toLowerCase() === text.toLowerCase());
+    if (isDuplicate) {
+      alert('Tugas ini sudah ada di daftarmu! Coba masukkan tugas yang lain.');
+      return; // Berhenti di sini, tugas tidak ditambahkan
+    }
+
     todos.unshift({ text, done: false });
     saveTodos();
     renderTodos();
     input.value = '';
     input.focus();
   }
-
-  function toggleTodo(i) {
-    todos[i].done = !todos[i].done;
-    saveTodos();
-    renderTodos();
-  }
-
-  function deleteTodo(i) {
-    todos.splice(i, 1);
-    saveTodos();
-    renderTodos();
-  }
-
-  function clearDone() {
-    todos = todos.filter(t => !t.done);
-    saveTodos();
-    renderTodos();
-  }
-
-  document.getElementById('todo-input').addEventListener('keydown', e => {
-    if (e.key === 'Enter') addTodo();
-  });
-
-  renderTodos();
-
 
   /* ════════════════════════════════
      FOCUS TIMER

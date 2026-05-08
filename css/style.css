@@ -375,3 +375,17 @@ body {
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+/* ── Light Mode Colors (Fitur 1) ── */
+body.light-mode {
+  --bg: #f0f2f5;
+  --surface: #ffffff;
+  --surface2: #e4e6eb;
+  --border: #cccccc;
+  --text: #18191a;
+  --muted: #666666;
+  --shadow: 0 4px 15px rgba(0,0,0,.1);
+}
+
+body.light-mode #clock-card {
+  background: linear-gradient(135deg, #ffffff 0%, #e4e6eb 100%);
+}

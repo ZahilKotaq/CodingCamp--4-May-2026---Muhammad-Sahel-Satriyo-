@@ -8,7 +8,33 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+<div style="text-align: right; max-width: 1200px; margin: 0 auto 10px auto;">
+    <button id="theme-toggle" class="btn btn-ghost" onclick="toggleTheme()">☀️ Light Mode</button>
+  </div>
 
+  <div class="grid">
+    <div class="card" id="todo-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+        <div class="card-title" style="margin-bottom: 0;">📝 To-Do List</div>
+        <select id="todo-sort" onchange="renderTodos()" style="background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 0.8rem; outline: none;">
+          <option value="all">Semua</option>
+          <option value="pending">Belum Selesai</option>
+          <option value="done">Selesai</option>
+        </select>
+      </div>
+      
+      <div class="todo-input-row">
+        <input type="text" id="todo-input" placeholder="Tambahkan tugas..." maxlength="120" />
+        <button class="btn" onclick="addTodo()">Add</button>
+      </div>
+      <ul id="todo-list"></ul>
+      <div class="todo-footer">
+        <span id="todo-count">0 tasks</span>
+        <button class="btn btn-sm btn-ghost" onclick="clearDone()">Clear done</button>
+      </div>
+    </div>
+
+    </div>
 <div class="grid">
 
   <div class="card" id="clock-card">
